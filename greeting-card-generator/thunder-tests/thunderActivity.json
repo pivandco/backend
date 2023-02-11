@@ -4,11 +4,11 @@
     "colId": "history",
     "containerId": "",
     "name": "Programmer's day",
-    "url": "http://localhost:3000/api/greeting-card?firstName=John&middleName=Johnny&lastName=Doe&gender=Male&holiday=birthday&template=2",
+    "url": "http://localhost:3000/api/greeting-card?firstName=John&middleName=Johnny&lastName=Doe&holiday=programmersDay",
     "method": "GET",
     "sortNum": 0,
     "created": "2023-02-11T06:38:05.109Z",
-    "modified": "2023-02-11T09:50:45.518Z",
+    "modified": "2023-02-11T09:57:45.923Z",
     "headers": [],
     "params": [
       {
@@ -27,21 +27,25 @@
         "isPath": false
       },
       {
-        "name": "gender",
-        "value": "Male",
-        "isPath": false
-      },
-      {
         "name": "holiday",
-        "value": "birthday",
-        "isPath": false
-      },
-      {
-        "name": "template",
-        "value": "2",
+        "value": "programmersDay",
         "isPath": false
       }
     ],
+    "tests": []
+  },
+  {
+    "_id": "cd086be6-593a-475c-b5b3-186bd57e17ca",
+    "colId": "history",
+    "containerId": "",
+    "name": "List holidays",
+    "url": "http://localhost:3000/api/holidays",
+    "method": "GET",
+    "sortNum": 0,
+    "created": "2023-02-11T10:03:41.976Z",
+    "modified": "2023-02-11T10:05:23.166Z",
+    "headers": [],
+    "params": [],
     "tests": []
   }
 ]

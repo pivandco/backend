@@ -45,6 +45,10 @@ app.get(
   }
 );
 
+app.get("/api/holidays", async (_, res) => {
+  res.json((await getHolidays()).map((h) => ({ id: h.id, name: h.name })));
+});
+
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
