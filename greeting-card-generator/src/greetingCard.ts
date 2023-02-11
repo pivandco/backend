@@ -27,7 +27,9 @@ async function getRandomTemplateForHoliday(
   holiday: Holiday
 ): Promise<[BackgroundImage, TemplateConfig?]> {
   const backgroundsDir = `cardTemplates/${holiday.id}/`;
-  const backgroundImageFiles = fs.readdirSync(backgroundsDir); // TODO: make this async
+  const backgroundImageFiles = fs
+    .readdirSync(backgroundsDir)
+    .filter((f) => imageFileNameRegex.test(f)); // TODO: make this async
   const randomIndex = Math.floor(Math.random() * backgroundImageFiles.length);
   return await getTemplateForHoliday(randomIndex, holiday);
 }
