@@ -1,22 +1,121 @@
 [
   {
     "id": "newYear",
-    "name": "Новый год"
+    "name": "Новый год",
+    "instrumentalCaseName": "Новым годом",
+    "templates": [
+      {
+        "textPosition": [80, 10],
+        "fontSize": 26,
+        "textColor": "#ffffff",
+        "splitLine": true
+      },
+      {
+        "textPosition": [0, 0],
+        "fontSize": 42,
+        "textColor": "#ffffff",
+        "splitLine": true
+      },
+      {
+        "textPosition": [300, 20],
+        "fontSize": 24,
+        "textColor": "#ffffff",
+        "splitLine": true
+      }
+    ]
   },
   {
     "id": "february23",
-    "name": "День защитника Отечества"
+    "name": "День защитника Отечества",
+    "instrumentalCaseName": "Днем защитника Отечества",
+    "templates": [
+      {
+        "textPosition": [500, 300],
+        "fontSize": 32,
+        "textColor": "#ffffff",
+        "splitLine": true
+      },
+      {
+        "textPosition": [150, 30],
+        "fontSize": 64,
+        "textColor": "#ffffff",
+        "splitLine": true
+      },
+      {
+        "textPosition": [50, 700],
+        "fontSize": 36,
+        "textColor": "#000000"
+      }
+    ]
   },
   {
     "id": "march8",
-    "name": "Международный женский день"
+    "name": "Международный женский день",
+    "instrumentalCaseName": "Международным женским днем",
+    "templates": [
+      {
+        "textPosition": [10, 10],
+        "fontSize": 26,
+        "textColor": "#ffffff",
+        "splitLine": true
+      },
+      {
+        "textPosition": [10, 10],
+        "fontSize": 26,
+        "textColor": "#000000"
+      },
+      {
+        "textPosition": [10, 10],
+        "fontSize": 26,
+        "textColor": "#ffffff",
+        "splitLine": true
+      }
+    ]
   },
   {
     "id": "birthday",
-    "name": "День рождения"
+    "name": "День рождения",
+    "instrumentalCaseName": "Днем рождения",
+    "templates": [
+      {
+        "textPosition": [10, 10],
+        "fontSize": 26,
+        "textColor": "#000000"
+      },
+      {
+        "textPosition": [10, 10],
+        "fontSize": 32,
+        "textColor": "#000000",
+        "splitLine": true
+      },
+      {
+        "textPosition": [10, 10],
+        "fontSize": 32,
+        "textColor": "#000000",
+        "splitLine": true
+      }
+    ]
   },
   {
     "id": "programmersDay",
-    "name": "День программиста"
+    "name": "День программиста",
+    "instrumentalCaseName": "Днем программиста",
+    "templates": [
+      {
+        "textPosition": [30, 40],
+        "fontSize": 26,
+        "textColor": "#94d1b8"
+      },
+      {
+        "textPosition": [220, 735],
+        "fontSize": 42,
+        "textColor": "#000000"
+      },
+      {
+        "textPosition": [23, 100],
+        "fontSize": 16,
+        "textColor": "#000000"
+      }
+    ]
   }
 ]

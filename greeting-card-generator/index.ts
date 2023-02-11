@@ -5,7 +5,7 @@ import {
   generateGreetingCardImage,
   GreetingCardInput,
 } from "./src/greetingCard";
-import holidays from "./src/holidays.json";
+import { getHolidays, Holiday } from "./src/holidays";
 
 const app = express();
 const port = 3000;
@@ -21,7 +21,9 @@ app.get(
   query("middleName").optional().isString(),
   query("lastName").optional().isString(),
   query("gender").isIn(Object.keys(Gender)),
-  query("holiday").isIn(holidays.map((h) => h.id)),
+  // FIXME
+  // query("holiday").isIn(getHolidays().map((h) => h.id)),
+  query("template").optional().isInt().toInt(),
 
   async (req, res) => {
     const errors = validationResult(req);
@@ -29,10 +31,11 @@ app.get(
       return res.status(400).json({ errors: errors.array() });
     }
 
+    const holidays = await getHolidays();
     const q = req.query as GreetingCardQuery;
-    const input = {
+    const input: GreetingCardInput = {
       ...q,
-      holiday: holidays.find((h) => h.id === q.holiday)!,
+      holiday: holidays.find((h) => h.id === q.holiday)! as Holiday,
     };
     const greetingCardImage = await generateGreetingCardImage(input);
 
