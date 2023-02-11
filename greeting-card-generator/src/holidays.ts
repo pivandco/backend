@@ -18,6 +18,6 @@ export interface TemplateConfig {
 type TextAlign = "left" | "center" | "right";
 
 export async function getHolidays(): Promise<Holiday[]> {
-  const holidaysJson = await readFile("./src/holidays.json", "utf-8");
+  const holidaysJson = await readFile("./holidays.json", "utf-8");
   return JSON.parse(holidaysJson);  // TODO: validation?
 }
