@@ -20,7 +20,7 @@ app.get(
   query("firstName").isString(),
   query("middleName").optional().isString(),
   query("lastName").optional().isString(),
-  query("gender").isIn(Object.keys(Gender)),
+  query("gender").optional().isIn(Object.keys(Gender)),
   // FIXME
   // query("holiday").isIn(getHolidays().map((h) => h.id)),
   query("template").optional().isInt().toInt(),
