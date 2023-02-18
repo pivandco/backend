@@ -1,0 +1,19 @@
+﻿GET http://localhost:5102/api/products
+
+###
+
+GET http://localhost:5102/api/products?pageSize=2&page=2
+
+###
+
+GET http://localhost:5102/api/products/1
+
+###
+
+POST http://localhost:5102/api/products
+Content-Type: application/json
+
+{
+  "name": "Product 1",
+  "price": 123.456
+}
