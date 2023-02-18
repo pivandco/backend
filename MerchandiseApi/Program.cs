@@ -4,7 +4,7 @@ using Sieve.Models;
 using Sieve.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<MerchandiseApiDb>(opt => opt.UseInMemoryDatabase("Products"));
+builder.Services.AddDbContext<MerchandiseApiDb>(opt => opt.UseSqlite("Data Source=app.db"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddScoped<SieveProcessor>();
 var app = builder.Build();
