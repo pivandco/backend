@@ -10,4 +10,5 @@ public sealed class MerchandiseApiDb : DbContext
     }
 
     public DbSet<Product> Products => Set<Product>();
+    public DbSet<ProductCategory> ProductCategories => Set<ProductCategory>();
 }
