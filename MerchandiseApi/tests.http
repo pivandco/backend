@@ -1,4 +1,4 @@
-﻿GET http://localhost:5102/api/products
+﻿GET http://localhost:5102/api/products?categoryId=1
 
 ###
 
@@ -10,10 +10,28 @@ GET http://localhost:5102/api/products/1
 
 ###
 
+GET http://localhost:5102/api/categories
+
+###
+
+GET http://localhost:5102/api/categories/1
+
+###
+
+POST http://localhost:5102/api/categories
+Content-Type: application/json
+
+{
+  "name": "Category 1"
+}
+
+###
+
 POST http://localhost:5102/api/products
 Content-Type: application/json
 
 {
-  "name": "Product 1",
-  "price": 123.456
+  "name": "Product 2",
+  "price": 123.456,
+  "categoryId": 1
 }
