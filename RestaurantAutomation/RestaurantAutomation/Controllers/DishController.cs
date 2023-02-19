@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+
 namespace RestaurantAutomation.Controllers;
 
 using Dto;
@@ -28,6 +30,7 @@ public sealed class DishController : ControllerBase
         await _db.Dishes.FindAsync(id) is { } dish ? Ok(DishResponseDto.FromDish(dish)) : NotFound();
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<DishResponseDto>> Create(DishRequestDto dishInput)
     {
         var dish = dishInput.ToDish(_db.DishTags);
@@ -37,6 +40,7 @@ public sealed class DishController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Update(int id, DishRequestDto input)
     {
         if (id != input.Id)
@@ -62,6 +66,7 @@ public sealed class DishController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
         var dish = await _db.Dishes.FindAsync(id);
