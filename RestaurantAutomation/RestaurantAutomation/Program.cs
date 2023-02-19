@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAutomation;
+using RestaurantAutomation.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,8 @@ builder.Services
         options.SignIn.RequireConfirmedAccount = false;
     })
     .AddEntityFrameworkStores<RestaurantAutomationDbContext>();
+
+builder.Services.AddTransient<JwtService>();
 
 var app = builder.Build();
 
