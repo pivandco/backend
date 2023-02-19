@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using RestaurantAutomation.Models;
+
 namespace RestaurantAutomation;
 
-using Microsoft.EntityFrameworkCore;
-using Models;
-
-public sealed class RestaurantAutomationDbContext : DbContext
+public sealed class RestaurantAutomationDbContext : IdentityDbContext<IdentityUser>
 {
     public RestaurantAutomationDbContext(DbContextOptions<RestaurantAutomationDbContext> options) : base(options)
     {
