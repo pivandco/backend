@@ -1,0 +1,62 @@
+{
+  "programmersDay": {
+    "message": "{firstname} {lastname}, с днём программиста!",
+    "point": [
+      20,
+      142
+    ],
+    "pathToIMG": "programmersDay.png",
+    "colorForeground": "#ffffff",
+    "fontSize": 16,
+    "alignment": 0,
+    "fontFamily": "Arial"
+  },
+  "birthday": {
+    "message": "С днём рождения, {firstname} {lastname}!",
+    "point": [
+      500,
+      923
+    ],
+    "pathToIMG": "birthday.jpg",
+    "colorForeground": "#000000",
+    "fontSize": 24,
+    "alignment": 1,
+    "fontFamily": "Comic Sans MS"
+  },
+  "23february": {
+    "message": "С Днём защитника Отечества,\n {firstname} {lastname}!",
+    "point": [
+      800,
+      350
+    ],
+    "pathToIMG": "23february.jpg",
+    "colorForeground": "#ffffff",
+    "fontSize": 36,
+    "alignment": 1,
+    "fontFamily": "Palatino Linotype"
+  },
+  "8march": {
+    "message": "С Международеным женским днём,\n{firstname} {lastname}!",
+    "point": [
+      10,
+      10
+    ],
+    "pathToIMG": "8march.jpg",
+    "colorForeground": "#ffffff",
+    "fontSize": 24,
+    "alignment": 0,
+    "fontFamily": "Tahoma"
+  },
+  "new_year": {
+    "message": "С Новым годом,\n{firstname} {lastname}!",
+    "point": [
+      240,
+      80
+    ],
+    "pathToIMG": "new_year.jpg",
+    "colorForeground": "#ffffff",
+    "fontSize": 32,
+    "alignment": 1,
+    "fontFamily": "Georgia"
+  }
+}
