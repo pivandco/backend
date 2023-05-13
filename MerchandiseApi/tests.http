@@ -35,3 +35,13 @@ Content-Type: application/json
   "price": 123.456,
   "categoryId": 1
 }
+
+###
+
+POST http://localhost:5102/api/products
+Content-Type: application/json
+
+{
+  "name": "Product 2",
+  "categoryId": 1
+}

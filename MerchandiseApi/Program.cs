@@ -1,12 +1,18 @@
+using FluentValidation;
 using MerchandiseApi;
 using Microsoft.EntityFrameworkCore;
 using Sieve.Models;
 using Sieve.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddDbContext<MerchandiseApiDb>(opt => opt.UseSqlite("Data Source=app.db"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddScoped<SieveProcessor>();
+
+builder.Services.AddScoped<IValidator<ProductDto>, ProductValidator>();
+builder.Services.AddScoped<IValidator<ProductCategoryDto>, ProductCategoryValidator>();
+
 var app = builder.Build();
 
 var productsApi = app.MapGroup("/api/products");
@@ -27,25 +33,34 @@ productsApi.MapGet("/",
 productsApi.MapGet("/{id:int}", async (int id, MerchandiseApiDb db) =>
     await db.FindAsync<Product>(id) is { } product ? Results.Ok(new ProductDto(product)) : Results.NotFound());
 
-productsApi.MapPost("/", async (MerchandiseApiDb db, ProductDto productDto) =>
+productsApi.MapPost("/", async (MerchandiseApiDb db, ProductDto productDto, IValidator<ProductDto> productValidator) =>
 {
+    var validationResult = productValidator.Validate(productDto);
+    if (!validationResult.IsValid)
+        return Results.ValidationProblem(validationResult.ToDictionary());
+
     db.Products.Add(productDto.ToProduct());
     await db.SaveChangesAsync();
     return Results.Created($"/api/products/{productDto.Id}", productDto);
 });
 
-productsApi.MapPut("/{id:int}", async (int id, ProductDto newProductDto, MerchandiseApiDb db) =>
-{
-    var todo = await db.Products.FindAsync(id);
-    if (todo == null) return Results.NotFound();
+productsApi.MapPut("/{id:int}",
+    async (int id, ProductDto newProductDto, MerchandiseApiDb db, IValidator<ProductDto> productValidator) =>
+    {
+        var validationResult = productValidator.Validate(newProductDto);
+        if (!validationResult.IsValid)
+            return Results.ValidationProblem(validationResult.ToDictionary());
 
-    todo.Name = newProductDto.Name;
-    todo.Price = newProductDto.Price;
-    todo.ProductCategoryId = newProductDto.CategoryId;
+        var todo = await db.Products.FindAsync(id);
+        if (todo == null) return Results.NotFound();
 
-    await db.SaveChangesAsync();
-    return Results.NoContent();
-});
+        todo.Name = newProductDto.Name;
+        todo.Price = newProductDto.Price;
+        todo.ProductCategoryId = newProductDto.CategoryId;
+
+        await db.SaveChangesAsync();
+        return Results.NoContent();
+    });
 
 productsApi.MapDelete("/{id:int}", async (int id, MerchandiseApiDb db) =>
 {
@@ -68,21 +83,32 @@ categoriesApi.MapGet("/{id:int}",
         ? Results.Ok(new ProductCategoryDto(category))
         : Results.NotFound());
 
-categoriesApi.MapPost("/", async (MerchandiseApiDb db, ProductCategoryDto categoryDto) =>
-{
-    db.ProductCategories.Add(categoryDto.ToProductCategory());
-    await db.SaveChangesAsync();
-    return Results.Created($"/api/categories/{categoryDto.Id}", categoryDto);
-});
+categoriesApi.MapPost("/",
+    async (MerchandiseApiDb db, ProductCategoryDto categoryDto, IValidator<ProductCategoryDto> categoryValidator) =>
+    {
+        var validationResult = categoryValidator.Validate(categoryDto);
+        if (!validationResult.IsValid)
+            return Results.ValidationProblem(validationResult.ToDictionary());
 
-categoriesApi.MapPut("/{id:int}", async (int id, MerchandiseApiDb db, ProductCategoryDto newCategoryDto) =>
-{
-    var oldCategory = await db.ProductCategories.FindAsync(id);
-    if (oldCategory == null) return Results.NotFound();
-    oldCategory.Name = newCategoryDto.Name;
-    await db.SaveChangesAsync();
-    return Results.NoContent();
-});
+        db.ProductCategories.Add(categoryDto.ToProductCategory());
+        await db.SaveChangesAsync();
+        return Results.Created($"/api/categories/{categoryDto.Id}", categoryDto);
+    });
+
+categoriesApi.MapPut("/{id:int}",
+    async (int id, MerchandiseApiDb db, ProductCategoryDto newCategoryDto,
+        IValidator<ProductCategoryDto> categoryValidator) =>
+    {
+        var validationResult = categoryValidator.Validate(newCategoryDto);
+        if (!validationResult.IsValid)
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        
+        var oldCategory = await db.ProductCategories.FindAsync(id);
+        if (oldCategory == null) return Results.NotFound();
+        oldCategory.Name = newCategoryDto.Name;
+        await db.SaveChangesAsync();
+        return Results.NoContent();
+    });
 
 categoriesApi.MapDelete("/{id:int}", async (int id, MerchandiseApiDb db) =>
 {
