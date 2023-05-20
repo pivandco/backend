@@ -20,7 +20,7 @@ public sealed class DishController : ControllerBase
 
     [HttpGet]
     public async Task<IEnumerable<DishResponseDto>> Index() =>
-        await _db.Dishes.Select(d => DishResponseDto.FromDish(d)).ToListAsync();
+        await _db.Dishes.Include(d => d.DishTags).Select(d => DishResponseDto.FromDish(d)).ToListAsync();
 
     /// <response code="404">If a dish with the specified ID does not exist</response>
     [HttpGet("{id:int}")]

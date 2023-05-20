@@ -90,9 +90,10 @@ categoriesApi.MapPost("/",
         if (!validationResult.IsValid)
             return Results.ValidationProblem(validationResult.ToDictionary());
 
-        db.ProductCategories.Add(categoryDto.ToProductCategory());
+        var category = categoryDto.ToProductCategory();
+        db.ProductCategories.Add(category);
         await db.SaveChangesAsync();
-        return Results.Created($"/api/categories/{categoryDto.Id}", categoryDto);
+        return Results.Created($"/api/categories/{category.Id}", new ProductCategoryDto(category));
     });
 
 categoriesApi.MapPut("/{id:int}",

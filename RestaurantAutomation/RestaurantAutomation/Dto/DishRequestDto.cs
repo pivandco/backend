@@ -18,6 +18,6 @@ public sealed class DishRequestDto
             Name = Name,
             Summary = Summary ?? "",
             Description = Description ?? "",
-            DishTags = tags.Where(t => TagIds.Contains(t.Id)).ToList()  // TODO: handle missing tags
+            DishTags = tags.Where(t => TagIds.Contains(t.Id)).ToList()
         };
 }
