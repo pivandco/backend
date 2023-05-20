@@ -19,15 +19,20 @@ public sealed class AccessCheckService
     {
         var rules = _ruleRepository.FindRulesRelatedToSubjectAndPassage(subject, passage).ToArray();
 
-        return TryAgainstRulesWhere(rules, r => r.Subject != null && r.Passage != null) ||
-               TryAgainstRulesWhere(rules, r => r.Subject != null && r.Area != null) ||
-               TryAgainstRulesWhere(rules, r => r.Group != null && r.Passage != null) ||
-               TryAgainstRulesWhere(rules, r => r.Group != null && r.Area != null);
+        var attemptResults = new[]
+        {
+            TryAgainstRulesWhere(rules, r => r.Subject != null && r.Passage != null),
+            TryAgainstRulesWhere(rules, r => r.Subject != null && r.Area != null),
+            TryAgainstRulesWhere(rules, r => r.Group != null && r.Passage != null),
+            TryAgainstRulesWhere(rules, r => r.Group != null && r.Area != null)
+        };
+
+        return attemptResults.SkipWhile(r => !r.HasValue).FirstOrDefault() ?? false;
     }
 
-    private bool TryAgainstRulesWhere(IEnumerable<Rule> rules, Func<Rule, bool> predicate)
+    private static bool? TryAgainstRulesWhere(IEnumerable<Rule> rules, Func<Rule, bool> predicate)
     {
         var rule = rules.Where(predicate).MinBy(r => r.Allow);
-        return rule?.Allow ?? false;
+        return rule?.Allow;
     }
 }

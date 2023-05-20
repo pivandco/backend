@@ -97,13 +97,13 @@ public sealed class AccessCheckServiceTest
     public void CanPass_CascadingRules_FavorsConcreteRules()
     {
         // Arrange
-        var broadRule = new Rule { Group = Group, Area = Area, Allow = false };
-        var fineRule = new Rule { Subject = Subject, Passage = Passage, Allow = true };
+        var broadRule = new Rule { Group = Group, Area = Area, Allow = true };
+        var fineRule = new Rule { Subject = Subject, Passage = Passage, Allow = false };
         var ruleRepository = GetRuleRepositoryWithRules(broadRule, fineRule);
         var service = new AccessCheckService(ruleRepository);
 
         // Act & Assert
-        service.CanPass(Subject, Passage).Should().BeTrue();
+        service.CanPass(Subject, Passage).Should().BeFalse();
     }
     
     private static IRuleRepository GetRuleRepositoryWithRules(params Rule[] rules) =>
