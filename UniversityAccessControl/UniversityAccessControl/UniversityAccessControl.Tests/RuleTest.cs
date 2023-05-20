@@ -3,7 +3,7 @@ using UniversityAccessControl.Models;
 
 namespace UniversityAccessControl.Tests;
 
-public class RuleTest
+public sealed class RuleTest
 {
     private static readonly Passage Passage = new() { Name = "Passage" };
     private static readonly Area Area = new() { Name = "Area" };
