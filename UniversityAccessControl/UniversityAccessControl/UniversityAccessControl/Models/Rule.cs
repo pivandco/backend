@@ -9,7 +9,7 @@ public sealed class Rule : IValidatableObject
     public Group? Group { get; set; }
     public Area? Area { get; set; }
     public Passage? Passage { get; set; }
-    public RuleType Type { get; set; }
+    public bool Allow { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
