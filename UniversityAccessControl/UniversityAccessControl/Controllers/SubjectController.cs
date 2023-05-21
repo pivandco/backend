@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniversityAccessControl.Dto;
@@ -20,6 +21,7 @@ public class SubjectController : ControllerBase
     public async Task<ActionResult<IEnumerable<Subject>>> GetSubjects() => await _db.Subjects.ToListAsync();
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<Subject>> GetSubject(int id)
     {
         var subject = await _db.Subjects.FindAsync(id);
@@ -28,6 +30,7 @@ public class SubjectController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> PutSubject(int id, SubjectRequest subjectDto)
     {
         var subject = await subjectDto.ToModelAsync(_db.Groups);
@@ -57,6 +60,7 @@ public class SubjectController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<Subject>> PostSubject(SubjectRequest subjectDto)
     {
         var subject = await subjectDto.ToModelAsync(_db.Groups);
@@ -67,6 +71,7 @@ public class SubjectController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteSubject(int id)
     {
         var subject = await _db.Subjects.FindAsync(id);

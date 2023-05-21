@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniversityAccessControl.Dto;
 using UniversityAccessControl.Models;
@@ -16,12 +17,14 @@ public class AccessLogController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public IEnumerable<AccessLogEntry> Get()
     {
         return _db.AccessLogEntries;
     }
 
     [HttpPost]
+    [Authorize]
     public async Task Post([FromBody] AccessLogEntryRequest entry)
     {
         _db.AccessLogEntries.Add(await entry.ToModelAsync(_db.Passages, _db.Subjects));

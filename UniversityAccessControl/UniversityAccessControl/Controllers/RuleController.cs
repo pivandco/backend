@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniversityAccessControl.Dto;
@@ -20,6 +21,7 @@ public class RuleController : ControllerBase
     public async Task<ActionResult<IEnumerable<Rule>>> GetRules() => await _db.Rules.ToListAsync();
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<Rule>> GetRule(int id)
     {
         var rule = await _db.Rules.FindAsync(id);
@@ -28,6 +30,7 @@ public class RuleController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> PutRule(int id, RuleRequest ruleDto)
     {
         var rule = await ruleDto.ToModelAsync(_db.Subjects, _db.Groups, _db.Passages, _db.Areas);
@@ -57,6 +60,7 @@ public class RuleController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<Rule>> PostRule(RuleRequest ruleDto)
     {
         var rule = await ruleDto.ToModelAsync(_db.Subjects, _db.Groups, _db.Passages, _db.Areas);
@@ -67,6 +71,7 @@ public class RuleController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteRule(int id)
     {
         var rule = await _db.Rules.FindAsync(id);

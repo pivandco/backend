@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniversityAccessControl.Dto;
@@ -17,12 +18,14 @@ public class GroupController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<Group>>> GetGroups()
     {
         return await _db.Groups.ToListAsync();
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<Group>> GetGroup(int id)
     {
         var group = await _db.Groups.FindAsync(id);
@@ -31,6 +34,7 @@ public class GroupController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> PutGroup(int id, GroupRequest groupDto)
     {
         var group = groupDto.ToModel();
@@ -54,6 +58,7 @@ public class GroupController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<Group>> PostGroup(GroupRequest group)
     {
         _db.Groups.Add(group.ToModel());
@@ -63,6 +68,7 @@ public class GroupController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteGroup(int id)
     {
         var group = await _db.Groups.FindAsync(id);

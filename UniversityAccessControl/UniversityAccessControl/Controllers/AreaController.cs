@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniversityAccessControl.Dto;
@@ -17,12 +18,14 @@ public class AreaController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<Area>>> GetAreas()
     {
         return await _db.Areas.ToListAsync();
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<Area>> GetArea(int id)
     {
         var area = await _db.Areas.FindAsync(id);
@@ -31,6 +34,7 @@ public class AreaController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> PutArea(int id, AreaRequest areaDto)
     {
         var area = areaDto.ToModel();
@@ -54,6 +58,7 @@ public class AreaController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<Area>> PostArea(AreaRequest area)
     {
         _db.Areas.Add(area.ToModel());
@@ -63,6 +68,7 @@ public class AreaController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeleteArea(int id)
     {
         var area = await _db.Areas.FindAsync(id);

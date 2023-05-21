@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniversityAccessControl.Models;
@@ -16,9 +17,11 @@ public class PassageController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<IEnumerable<Passage>>> GetPassages() => await _db.Passages.ToListAsync();
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<Passage>> GetPassage(int id)
     {
         var passage = await _db.Passages.FindAsync(id);
@@ -27,6 +30,7 @@ public class PassageController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public async Task<IActionResult> PutPassage(int id, Passage passage)
     {
         if (id != passage.Id)
@@ -54,6 +58,7 @@ public class PassageController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<ActionResult<Passage>> PostPassage(Passage passage)
     {
         _db.Passages.Add(passage);
@@ -63,6 +68,7 @@ public class PassageController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public async Task<IActionResult> DeletePassage(int id)
     {
         var passage = await _db.Passages.FindAsync(id);
