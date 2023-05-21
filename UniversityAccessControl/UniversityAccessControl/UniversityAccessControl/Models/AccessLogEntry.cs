@@ -2,7 +2,8 @@ namespace UniversityAccessControl.Models;
 
 public class AccessLogEntry
 {
-    public DateTimeOffset AccessedAt { get; set; }
-    public Subject Subject { get; set; }
-    public Passage Passage { get; set; }
+    public int Id { get; set; }
+    public required DateTimeOffset AccessedAt { get; set; }
+    public required Subject Subject { get; set; }
+    public required Passage Passage { get; set; }
 }

@@ -5,6 +5,10 @@ namespace UniversityAccessControl;
 
 public class AccessControlDbContext : DbContext
 {
+    public AccessControlDbContext(DbContextOptions options) : base(options)
+    {
+    }
+
     public virtual DbSet<AccessLogEntry> AccessLogEntries => Set<AccessLogEntry>();
     public virtual DbSet<Area> Areas => Set<Area>();
     public virtual DbSet<Group> Groups => Set<Group>();
