@@ -22,23 +22,21 @@ public class GroupController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<Group>>> GetGroups()
-    {
-        return await _db.Groups.ToListAsync();
-    }
+    public async Task<ActionResult<IEnumerable<GroupDto>>> GetGroups() =>
+        await _mapper.ProjectTo<GroupDto>(_db.Groups).ToListAsync();
 
     [HttpGet("{id}")]
     [Authorize]
-    public async Task<ActionResult<Group>> GetGroup(int id)
+    public async Task<ActionResult<GroupDto>> GetGroup(int id)
     {
-        var group = await _db.Groups.FindAsync(id);
+        var group = _mapper.Map<GroupDto>(await _db.Groups.FindAsync(id));
 
         return group == null ? NotFound() : group;
     }
 
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<IActionResult> PutGroup(int id, GroupRequest groupDto)
+    public async Task<IActionResult> PutGroup(int id, GroupDto groupDto)
     {
         var group = _mapper.Map<Group>(groupDto);
 
@@ -62,7 +60,7 @@ public class GroupController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Group>> PostGroup(GroupRequest groupDto)
+    public async Task<ActionResult<Group>> PostGroup(GroupDto groupDto)
     {
         var group = _mapper.Map<Group>(groupDto);
         _db.Groups.Add(group);

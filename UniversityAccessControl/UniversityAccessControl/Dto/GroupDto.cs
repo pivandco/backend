@@ -1,6 +1,6 @@
 namespace UniversityAccessControl.Dto;
 
-public class GroupRequest
+public class GroupDto
 {
     public int Id { get; set; }
     public required string Name { get; set; }
