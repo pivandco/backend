@@ -21,13 +21,14 @@ public class SubjectController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Subject>>> GetSubjects() => await _db.Subjects.ToListAsync();
+    public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubjects() =>
+        await _mapper.ProjectTo<SubjectResponse>(_db.Subjects).ToListAsync();
 
     [HttpGet("{id}")]
     [Authorize]
-    public async Task<ActionResult<Subject>> GetSubject(int id)
+    public async Task<ActionResult<SubjectResponse>> GetSubject(int id)
     {
-        var subject = await _db.Subjects.FindAsync(id);
+        var subject = _mapper.Map<SubjectResponse>(await _db.Subjects.FindAsync(id));
 
         return subject == null ? NotFound() : subject;
     }
@@ -64,13 +65,13 @@ public class SubjectController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Subject>> PostSubject(SubjectRequest subjectDto)
+    public async Task<ActionResult<SubjectResponse>> PostSubject(SubjectRequest subjectDto)
     {
         var subject = _mapper.Map<Subject>(subjectDto);
         _db.Subjects.Add(subject);
         await _db.SaveChangesAsync();
 
-        return CreatedAtAction("GetSubject", new { id = subject.Id }, subject);
+        return CreatedAtAction("GetSubject", new { id = subject.Id }, _mapper.Map<SubjectResponse>(subject));
     }
 
     [HttpDelete("{id}")]
