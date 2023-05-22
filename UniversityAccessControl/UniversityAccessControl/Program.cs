@@ -1,7 +1,12 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using UniversityAccessControl;
+using UniversityAccessControl.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +51,31 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 builder.Services.AddDbContext<AccessControlDbContext>(options => options.UseSqlite("Data Source=app.db"));
+builder.Services
+    .AddIdentityCore<IdentityUser>(options => { options.SignIn.RequireConfirmedAccount = false; })
+    .AddEntityFrameworkStores<AccessControlDbContext>();
+builder.Services.AddScoped<UserInitializer>();
+
+var jwtKey = builder.Configuration["Jwt:Key"];
+ArgumentNullException.ThrowIfNull(jwtKey, "config item Jwt:Key");
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
+builder.Services.AddAuthorization();
+
+builder.Services.AddTransient<JwtService>();
 
 builder.Services.AddAutoMapper(typeof(AccessControlDbContext));
 
@@ -63,5 +93,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    await scope.ServiceProvider.GetRequiredService<UserInitializer>().InitializeAsync();
+}
 
 app.Run();

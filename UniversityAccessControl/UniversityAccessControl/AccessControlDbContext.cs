@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UniversityAccessControl.Models;
 
@@ -15,6 +16,7 @@ public class AccessControlDbContext : DbContext
     public virtual DbSet<Passage> Passages => Set<Passage>();
     public virtual DbSet<Rule> Rules => Set<Rule>();
     public virtual DbSet<Subject> Subjects => Set<Subject>();
+    public virtual DbSet<IdentityUser> Users => Set<IdentityUser>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
