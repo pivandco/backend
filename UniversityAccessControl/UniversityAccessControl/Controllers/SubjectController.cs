@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,14 +8,16 @@ using UniversityAccessControl.Models;
 namespace UniversityAccessControl.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("[controller]")]
 public class SubjectController : ControllerBase
 {
     private readonly AccessControlDbContext _db;
+    private readonly IMapper _mapper;
 
-    public SubjectController(AccessControlDbContext db)
+    public SubjectController(AccessControlDbContext db, IMapper mapper)
     {
         _db = db;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -33,7 +36,7 @@ public class SubjectController : ControllerBase
     [Authorize]
     public async Task<IActionResult> PutSubject(int id, SubjectRequest subjectDto)
     {
-        var subject = await subjectDto.ToModelAsync(_db.Groups);
+        var subject = _mapper.Map<Subject>(subjectDto);
 
         if (id != subject.Id)
         {
@@ -63,7 +66,7 @@ public class SubjectController : ControllerBase
     [Authorize]
     public async Task<ActionResult<Subject>> PostSubject(SubjectRequest subjectDto)
     {
-        var subject = await subjectDto.ToModelAsync(_db.Groups);
+        var subject = _mapper.Map<Subject>(subjectDto);
         _db.Subjects.Add(subject);
         await _db.SaveChangesAsync();
 

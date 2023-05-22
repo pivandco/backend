@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,12 @@ namespace UniversityAccessControl.Controllers;
 public class RuleController : ControllerBase
 {
     private readonly AccessControlDbContext _db;
+    private readonly IMapper _mapper;
 
-    public RuleController(AccessControlDbContext db)
+    public RuleController(AccessControlDbContext db, IMapper mapper)
     {
         _db = db;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -33,7 +36,7 @@ public class RuleController : ControllerBase
     [Authorize]
     public async Task<IActionResult> PutRule(int id, RuleRequest ruleDto)
     {
-        var rule = await ruleDto.ToModelAsync(_db.Subjects, _db.Groups, _db.Passages, _db.Areas);
+        var rule = _mapper.Map<Rule>(ruleDto);
         
         if (id != rule.Id)
         {
@@ -63,7 +66,7 @@ public class RuleController : ControllerBase
     [Authorize]
     public async Task<ActionResult<Rule>> PostRule(RuleRequest ruleDto)
     {
-        var rule = await ruleDto.ToModelAsync(_db.Subjects, _db.Groups, _db.Passages, _db.Areas);
+        var rule = _mapper.Map<Rule>(ruleDto);
         _db.Rules.Add(rule);
         await _db.SaveChangesAsync();
 

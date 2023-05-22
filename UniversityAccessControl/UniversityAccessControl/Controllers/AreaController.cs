@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,12 @@ namespace UniversityAccessControl.Controllers;
 public class AreaController : ControllerBase
 {
     private readonly AccessControlDbContext _db;
+    private readonly IMapper _mapper;
 
-    public AreaController(AccessControlDbContext db)
+    public AreaController(AccessControlDbContext db, IMapper mapper)
     {
         _db = db;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -37,7 +40,7 @@ public class AreaController : ControllerBase
     [Authorize]
     public async Task<IActionResult> PutArea(int id, AreaRequest areaDto)
     {
-        var area = areaDto.ToModel();
+        var area = _mapper.Map<Area>(areaDto);
 
         if (id != area.Id) return BadRequest();
 
@@ -59,9 +62,10 @@ public class AreaController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Area>> PostArea(AreaRequest area)
+    public async Task<ActionResult<Area>> PostArea(AreaRequest areaDto)
     {
-        _db.Areas.Add(area.ToModel());
+        var area = _mapper.Map<Area>(areaDto);
+        _db.Areas.Add(area);
         await _db.SaveChangesAsync();
 
         return CreatedAtAction("GetArea", new { id = area.Id }, area);

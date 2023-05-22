@@ -38,6 +38,8 @@ builder.Services.AddSwaggerGen(option =>
 });
 builder.Services.AddDbContext<AccessControlDbContext>(options => options.UseSqlite("Data Source=app.db"));
 
+builder.Services.AddAutoMapper(typeof(AccessControlDbContext));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

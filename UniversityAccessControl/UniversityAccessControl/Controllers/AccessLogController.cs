@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniversityAccessControl.Dto;
@@ -10,10 +11,12 @@ namespace UniversityAccessControl.Controllers;
 public class AccessLogController : ControllerBase
 {
     private readonly AccessControlDbContext _db;
+    private readonly IMapper _mapper;
 
-    public AccessLogController(AccessControlDbContext db)
+    public AccessLogController(AccessControlDbContext db, IMapper mapper)
     {
         _db = db;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -27,7 +30,7 @@ public class AccessLogController : ControllerBase
     [Authorize]
     public async Task Post([FromBody] AccessLogEntryRequest entry)
     {
-        _db.AccessLogEntries.Add(await entry.ToModelAsync(_db.Passages, _db.Subjects));
+        _db.AccessLogEntries.Add(_mapper.Map<AccessLogEntry>(entry));
         await _db.SaveChangesAsync();
     }
 }

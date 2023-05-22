@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,10 +12,12 @@ namespace UniversityAccessControl.Controllers;
 public class GroupController : ControllerBase
 {
     private readonly AccessControlDbContext _db;
+    private readonly IMapper _mapper;
 
-    public GroupController(AccessControlDbContext db)
+    public GroupController(AccessControlDbContext db, IMapper mapper)
     {
         _db = db;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -37,7 +40,7 @@ public class GroupController : ControllerBase
     [Authorize]
     public async Task<IActionResult> PutGroup(int id, GroupRequest groupDto)
     {
-        var group = groupDto.ToModel();
+        var group = _mapper.Map<Group>(groupDto);
 
         if (id != group.Id) return BadRequest();
 
@@ -59,9 +62,10 @@ public class GroupController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Group>> PostGroup(GroupRequest group)
+    public async Task<ActionResult<Group>> PostGroup(GroupRequest groupDto)
     {
-        _db.Groups.Add(group.ToModel());
+        var group = _mapper.Map<Group>(groupDto);
+        _db.Groups.Add(group);
         await _db.SaveChangesAsync();
 
         return CreatedAtAction("GetGroup", new { id = group.Id }, group);
