@@ -60,13 +60,13 @@ public class GroupController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Group>> PostGroup(GroupDto groupDto)
+    public async Task<ActionResult<GroupDto>> PostGroup(GroupDto groupDto)
     {
         var group = _mapper.Map<Group>(groupDto);
         _db.Groups.Add(group);
         await _db.SaveChangesAsync();
 
-        return CreatedAtAction("GetGroup", new { id = group.Id }, group);
+        return CreatedAtAction("GetGroup", new { id = group.Id }, _mapper.Map<GroupDto>(group));
     }
 
     [HttpDelete("{id}")]

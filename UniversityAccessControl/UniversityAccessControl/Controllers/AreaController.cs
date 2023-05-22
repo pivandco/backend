@@ -22,23 +22,20 @@ public class AreaController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<Area>>> GetAreas()
-    {
-        return await _db.Areas.ToListAsync();
-    }
+    public async Task<ActionResult<IEnumerable<AreaDto>>> GetAreas() => await _mapper.ProjectTo<AreaDto>(_db.Areas).ToListAsync();
 
     [HttpGet("{id}")]
     [Authorize]
-    public async Task<ActionResult<Area>> GetArea(int id)
+    public async Task<ActionResult<AreaDto>> GetArea(int id)
     {
-        var area = await _db.Areas.FindAsync(id);
+        var area = _mapper.Map<AreaDto>(await _db.Areas.FindAsync(id));
 
         return area == null ? NotFound() : area;
     }
 
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<IActionResult> PutArea(int id, AreaRequest areaDto)
+    public async Task<IActionResult> PutArea(int id, AreaDto areaDto)
     {
         var area = _mapper.Map<Area>(areaDto);
 
@@ -62,7 +59,7 @@ public class AreaController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Area>> PostArea(AreaRequest areaDto)
+    public async Task<ActionResult<Area>> PostArea(AreaDto areaDto)
     {
         var area = _mapper.Map<Area>(areaDto);
         _db.Areas.Add(area);

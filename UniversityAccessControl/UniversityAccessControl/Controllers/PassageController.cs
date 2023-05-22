@@ -1,38 +1,45 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using UniversityAccessControl.Dto;
 using UniversityAccessControl.Models;
 
-namespace UniversityAccessControl.Dto;
+namespace UniversityAccessControl.Controllers;
 
 [ApiController]
 [Route("[controller]")]
 public class PassageController : ControllerBase
 {
     private readonly AccessControlDbContext _db;
+    private readonly IMapper _mapper;
 
-    public PassageController(AccessControlDbContext db)
+    public PassageController(AccessControlDbContext db, IMapper mapper)
     {
         _db = db;
+        _mapper = mapper;
     }
 
     [HttpGet]
     [Authorize]
-    public async Task<ActionResult<IEnumerable<Passage>>> GetPassages() => await _db.Passages.ToListAsync();
+    public async Task<ActionResult<IEnumerable<PassageResponse>>> GetPassages() =>
+        await _mapper.ProjectTo<PassageResponse>(_db.Passages).ToListAsync();
 
     [HttpGet("{id}")]
     [Authorize]
-    public async Task<ActionResult<Passage>> GetPassage(int id)
+    public async Task<ActionResult<PassageResponse>> GetPassage(int id)
     {
-        var passage = await _db.Passages.FindAsync(id);
+        var passage = _mapper.Map<PassageResponse>(await _db.Passages.FindAsync(id));
 
         return passage == null ? NotFound() : passage;
     }
 
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<IActionResult> PutPassage(int id, Passage passage)
+    public async Task<IActionResult> PutPassage(int id, PassageRequest passageDto)
     {
+        var passage = _mapper.Map<Passage>(passageDto);
+
         if (id != passage.Id)
         {
             return BadRequest();
@@ -59,8 +66,9 @@ public class PassageController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Passage>> PostPassage(Passage passage)
+    public async Task<ActionResult<PassageResponse>> PostPassage(PassageRequest passageDto)
     {
+        var passage = _mapper.Map<Passage>(passageDto);
         _db.Passages.Add(passage);
         await _db.SaveChangesAsync();
 

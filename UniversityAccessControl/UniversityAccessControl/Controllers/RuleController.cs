@@ -21,13 +21,14 @@ public class RuleController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Rule>>> GetRules() => await _db.Rules.ToListAsync();
+    public async Task<ActionResult<IEnumerable<RuleResponse>>> GetRules() =>
+        await _mapper.ProjectTo<RuleResponse>(_db.Rules).ToListAsync();
 
     [HttpGet("{id}")]
     [Authorize]
-    public async Task<ActionResult<Rule>> GetRule(int id)
+    public async Task<ActionResult<RuleResponse>> GetRule(int id)
     {
-        var rule = await _db.Rules.FindAsync(id);
+        var rule = _mapper.Map<RuleResponse>(await _db.Rules.FindAsync(id));
 
         return rule == null ? NotFound() : rule;
     }
@@ -37,7 +38,7 @@ public class RuleController : ControllerBase
     public async Task<IActionResult> PutRule(int id, RuleRequest ruleDto)
     {
         var rule = _mapper.Map<Rule>(ruleDto);
-        
+
         if (id != rule.Id)
         {
             return BadRequest();
@@ -64,13 +65,13 @@ public class RuleController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Rule>> PostRule(RuleRequest ruleDto)
+    public async Task<ActionResult<RuleResponse>> PostRule(RuleRequest ruleDto)
     {
         var rule = _mapper.Map<Rule>(ruleDto);
         _db.Rules.Add(rule);
         await _db.SaveChangesAsync();
 
-        return CreatedAtAction("GetRule", new { id = rule.Id }, rule);
+        return CreatedAtAction("GetRule", new { id = rule.Id }, _mapper.Map<RuleResponse>(rule));
     }
 
     [HttpDelete("{id}")]

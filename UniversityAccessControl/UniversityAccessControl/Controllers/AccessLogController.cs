@@ -21,10 +21,7 @@ public class AccessLogController : ControllerBase
 
     [HttpGet]
     [Authorize]
-    public IEnumerable<AccessLogEntry> Get()
-    {
-        return _db.AccessLogEntries;
-    }
+    public IEnumerable<AccessLogEntryResponse> Get() => _mapper.ProjectTo<AccessLogEntryResponse>(_db.AccessLogEntries);
 
     [HttpPost]
     [Authorize]
