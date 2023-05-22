@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using UniversityAccessControl;
 
@@ -6,7 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
@@ -34,6 +38,11 @@ builder.Services.AddSwaggerGen(option =>
             },
             Array.Empty<string>()
         }
+    });
+    option.MapType(typeof(DateOnly), () => new OpenApiSchema
+    {
+        Type = "string",
+        Example = new OpenApiString("2023-12-30")
     });
 });
 builder.Services.AddDbContext<AccessControlDbContext>(options => options.UseSqlite("Data Source=app.db"));
