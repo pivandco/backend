@@ -77,7 +77,7 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddTransient<JwtService>();
 
-builder.Services.AddAutoMapper(typeof(AccessControlDbContext));
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
 
