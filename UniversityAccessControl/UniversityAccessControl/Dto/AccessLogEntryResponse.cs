@@ -1,5 +1,3 @@
-using UniversityAccessControl.Models;
-
 namespace UniversityAccessControl.Dto;
 
 public class AccessLogEntryResponse

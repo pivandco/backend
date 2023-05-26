@@ -17,6 +17,7 @@ public class AutoMapperProfile : Profile
         CreateMap<Rule, RuleResponse>();
         CreateMap<RuleRequest, Rule>();
         CreateMap<Subject, SubjectResponse>();
-        CreateMap<SubjectRequest, Subject>();
+        CreateMap<SubjectRequest, Subject>().ForMember(r => r.Groups,
+            options => options.MapFrom(r => r.GroupIds.Select(id => new Group { Id = id })));
     }
 }

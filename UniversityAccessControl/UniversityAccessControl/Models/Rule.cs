@@ -5,9 +5,13 @@ namespace UniversityAccessControl.Models;
 public sealed class Rule : IValidatableObject
 {
     public int Id { get; set; }
+    public int? SubjectId { get; set; }
     public Subject? Subject { get; set; }
+    public int? GroupId { get; set; }
     public Group? Group { get; set; }
+    public int? AreaId { get; set; }
     public Area? Area { get; set; }
+    public int? PassageId { get; set; }
     public Passage? Passage { get; set; }
     public bool Allow { get; set; }
 
