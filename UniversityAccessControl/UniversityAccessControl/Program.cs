@@ -21,6 +21,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "University Access Control API", Version = "v1" });
+    
+    option.SchemaFilter<RequireNonNullablePropertiesSchemaFilter>();
+    option.SupportNonNullableReferenceTypes();
+    option.UseAllOfToExtendReferenceSchemas();
+    option.UseAllOfForInheritance();
+
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
