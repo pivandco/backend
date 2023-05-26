@@ -1,6 +1,6 @@
 namespace UniversityAccessControl.Dto;
 
-public class AreaDto : AreaPostRequest
+public class SubjectPutRequest : SubjectPostRequest
 {
     public int Id { get; set; }
 }

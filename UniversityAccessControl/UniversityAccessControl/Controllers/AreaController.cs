@@ -59,7 +59,7 @@ public class AreaController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<Area>> PostArea(AreaDto areaDto)
+    public async Task<ActionResult<Area>> PostArea(AreaPostRequest areaDto)
     {
         var area = _mapper.Map<Area>(areaDto);
         _db.Areas.Add(area);

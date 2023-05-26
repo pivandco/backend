@@ -1,6 +1,6 @@
 namespace UniversityAccessControl.Dto;
 
-public class AreaDto : AreaPostRequest
+public sealed class RulePutRequest : RulePostRequest
 {
     public int Id { get; set; }
 }

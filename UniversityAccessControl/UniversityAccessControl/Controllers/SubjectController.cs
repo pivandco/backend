@@ -35,9 +35,9 @@ public class SubjectController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<IActionResult> PutSubject(int id, SubjectRequest subjectDto)
+    public async Task<IActionResult> PutSubject(int id, SubjectPutRequest subjectPutDto)
     {
-        var subject = _mapper.Map<Subject>(subjectDto);
+        var subject = _mapper.Map<Subject>(subjectPutDto);
 
         if (id != subject.Id)
         {
@@ -65,9 +65,9 @@ public class SubjectController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<SubjectResponse>> PostSubject(SubjectRequest subjectDto)
+    public async Task<ActionResult<SubjectResponse>> PostSubject(SubjectPostRequest subjectPutDto)
     {
-        var subject = _mapper.Map<Subject>(subjectDto);
+        var subject = _mapper.Map<Subject>(subjectPutDto);
         _db.Subjects.Add(subject);
         await _db.SaveChangesAsync();
 

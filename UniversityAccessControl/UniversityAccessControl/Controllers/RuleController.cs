@@ -35,9 +35,9 @@ public class RuleController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<IActionResult> PutRule(int id, RuleRequest ruleDto)
+    public async Task<IActionResult> PutRule(int id, RulePutRequest rulePutDto)
     {
-        var rule = _mapper.Map<Rule>(ruleDto);
+        var rule = _mapper.Map<Rule>(rulePutDto);
 
         if (id != rule.Id)
         {
@@ -65,9 +65,9 @@ public class RuleController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<RuleResponse>> PostRule(RuleRequest ruleDto)
+    public async Task<ActionResult<RuleResponse>> PostRule(RulePostRequest rulePutDto)
     {
-        var rule = _mapper.Map<Rule>(ruleDto);
+        var rule = _mapper.Map<Rule>(rulePutDto);
         _db.Rules.Add(rule);
         await _db.SaveChangesAsync();
 

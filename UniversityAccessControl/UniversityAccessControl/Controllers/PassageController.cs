@@ -36,9 +36,9 @@ public class PassageController : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize]
-    public async Task<IActionResult> PutPassage(int id, PassageRequest passageDto)
+    public async Task<IActionResult> PutPassage(int id, PassagePutRequest passagePutDto)
     {
-        var passage = _mapper.Map<Passage>(passageDto);
+        var passage = _mapper.Map<Passage>(passagePutDto);
 
         if (id != passage.Id)
         {
@@ -66,9 +66,9 @@ public class PassageController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<PassageResponse>> PostPassage(PassageRequest passageDto)
+    public async Task<ActionResult<PassageResponse>> PostPassage(PassagePostRequest passagePutDto)
     {
-        var passage = _mapper.Map<Passage>(passageDto);
+        var passage = _mapper.Map<Passage>(passagePutDto);
         _db.Passages.Add(passage);
         await _db.SaveChangesAsync();
 

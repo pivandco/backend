@@ -60,7 +60,7 @@ public class GroupController : ControllerBase
 
     [HttpPost]
     [Authorize]
-    public async Task<ActionResult<GroupDto>> PostGroup(GroupDto groupDto)
+    public async Task<ActionResult<GroupDto>> PostGroup(GroupPostRequest groupDto)
     {
         var group = _mapper.Map<Group>(groupDto);
         _db.Groups.Add(group);

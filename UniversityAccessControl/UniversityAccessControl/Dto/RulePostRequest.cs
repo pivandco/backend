@@ -1,8 +1,7 @@
 namespace UniversityAccessControl.Dto;
 
-public sealed class RuleRequest
+public class RulePostRequest
 {
-    public int Id { get; set; }
     public int? SubjectId { get; set; }
     public int? GroupId { get; set; }
     public int? AreaId { get; set; }

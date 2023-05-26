@@ -1,6 +1,6 @@
 namespace UniversityAccessControl.Dto;
 
-public class AreaDto : AreaPostRequest
+public class PassagePutRequest : PassagePostRequest
 {
     public int Id { get; set; }
 }
