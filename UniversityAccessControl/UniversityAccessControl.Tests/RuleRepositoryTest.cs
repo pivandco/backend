@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Moq.EntityFrameworkCore;
 using UniversityAccessControl.Models;
 
@@ -17,7 +19,11 @@ public sealed class RuleRepositoryTest
     private static readonly Area Area = new() { Name = "Area" };
 
     private static readonly Passage Passage = new() { Name = "Passage", Area = Area };
-    private readonly Mock<AccessControlDbContext> _dbContext = new();
+
+    private readonly Mock<AccessControlDbContext> _dbContext =
+        new(new DbContextOptions<AccessControlDbContext>(),
+            Mock.Of<IWebHostEnvironment>(e => e.EnvironmentName == "UnitTest"));
+
     private readonly RuleRepository _repository;
 
     public RuleRepositoryTest()

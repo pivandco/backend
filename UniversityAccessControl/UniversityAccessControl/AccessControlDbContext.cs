@@ -6,8 +6,12 @@ namespace UniversityAccessControl;
 
 public class AccessControlDbContext : DbContext
 {
-    public AccessControlDbContext(DbContextOptions options) : base(options)
+    public AccessControlDbContext(DbContextOptions options, IWebHostEnvironment environment) : base(options)
     {
+        if (environment.IsEnvironment("IntegrationTest"))
+        {
+            Database.EnsureCreated();
+        }
     }
 
     public virtual DbSet<AccessLogEntry> AccessLogEntries => Set<AccessLogEntry>();
