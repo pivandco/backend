@@ -21,7 +21,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "University Access Control API", Version = "v1" });
-    
+
     option.SchemaFilter<RequireNonNullablePropertiesSchemaFilter>();
     option.SupportNonNullableReferenceTypes();
     option.UseAllOfToExtendReferenceSchemas();
@@ -62,21 +62,25 @@ builder.Services
     .AddEntityFrameworkStores<AccessControlDbContext>();
 builder.Services.AddScoped<UserInitializer>();
 
-var jwtKey = builder.Configuration["Jwt:Key"];
-ArgumentNullException.ThrowIfNull(jwtKey, "config item Jwt:Key");
+builder.Services.AddOptions<JwtOptions>()
+    .BindConfiguration("Jwt")
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!;
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters()
+        options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+            ValidAudience = jwtOptions.Audience,
+            ValidIssuer = jwtOptions.Issuer,
+            IssuerSigningKey = new SymmetricSecurityKey(jwtOptions.Key)
         };
     });
 builder.Services.AddAuthorization();

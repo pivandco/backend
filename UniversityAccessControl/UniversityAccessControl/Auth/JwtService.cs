@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace UniversityAccessControl.Auth;
@@ -11,11 +11,11 @@ public sealed class JwtService
 {
     private const int ExpirationMinutes = 30;
 
-    private readonly IConfiguration _configuration;
+    private readonly JwtOptions _jwtOptions;
 
-    public JwtService(IConfiguration configuration)
+    public JwtService(IOptions<JwtOptions> jwtOptions)
     {
-        _configuration = configuration;
+        _jwtOptions = jwtOptions.Value;
     }
 
     public AuthResponse CreateToken(IdentityUser user)
@@ -41,8 +41,8 @@ public sealed class JwtService
         DateTime expiration)
     {
         return new JwtSecurityToken(
-            _configuration["Jwt:Issuer"],
-            _configuration["Jwt:Audience"],
+            _jwtOptions.Issuer,
+            _jwtOptions.Audience,
             claims,
             expires: expiration,
             signingCredentials: credentials
@@ -51,8 +51,7 @@ public sealed class JwtService
 
     private IEnumerable<Claim> CreateClaims(IdentityUser user)
     {
-        var subject = _configuration["Jwt:Subject"];
-        ArgumentNullException.ThrowIfNull(subject);
+        var subject = _jwtOptions.Subject;
         ArgumentNullException.ThrowIfNull(user.UserName);
 
         return new[]
@@ -65,12 +64,6 @@ public sealed class JwtService
         };
     }
 
-    private SigningCredentials CreateSigningCredentials()
-    {
-        var key = _configuration["Jwt:Key"];
-        ArgumentNullException.ThrowIfNull(key);
-
-        return new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
-            SecurityAlgorithms.HmacSha256);
-    }
+    private SigningCredentials CreateSigningCredentials() =>
+        new(new SymmetricSecurityKey(_jwtOptions.Key), SecurityAlgorithms.HmacSha256);
 }
