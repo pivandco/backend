@@ -22,7 +22,7 @@ public class SubjectController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<SubjectResponse>>> GetSubjects() =>
-        await _mapper.ProjectTo<SubjectResponse>(_db.Subjects).ToListAsync();
+        await _mapper.ProjectTo<SubjectResponse>(_db.Subjects.Include(s => s.Groups)).ToListAsync();
 
     [HttpGet("{id}")]
     [Authorize]

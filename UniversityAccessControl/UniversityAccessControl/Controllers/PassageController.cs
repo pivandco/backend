@@ -23,13 +23,13 @@ public class PassageController : ControllerBase
     [HttpGet]
     [Authorize]
     public async Task<ActionResult<IEnumerable<PassageResponse>>> GetPassages() =>
-        await _mapper.ProjectTo<PassageResponse>(_db.Passages).ToListAsync();
+        await _mapper.ProjectTo<PassageResponse>(_db.Passages.Include(p => p.Area)).ToListAsync();
 
     [HttpGet("{id}")]
     [Authorize]
     public async Task<ActionResult<PassageResponse>> GetPassage(int id)
     {
-        var passage = _mapper.Map<PassageResponse>(await _db.Passages.FindAsync(id));
+        var passage = _mapper.Map<PassageResponse>(await _db.Passages.Include(p => p.Area).FirstAsync(p => p.Id == id));
 
         return passage == null ? NotFound() : passage;
     }
@@ -70,9 +70,10 @@ public class PassageController : ControllerBase
     {
         var passage = _mapper.Map<Passage>(passagePutDto);
         _db.Passages.Add(passage);
+        await _db.Entry(passage).Reference(p => p.Area).LoadAsync();
         await _db.SaveChangesAsync();
 
-        return CreatedAtAction("GetPassage", new { id = passage.Id }, passage);
+        return CreatedAtAction("GetPassage", new { id = passage.Id }, _mapper.Map<PassageResponse>(passage));
     }
 
     [HttpDelete("{id}")]

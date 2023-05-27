@@ -61,9 +61,9 @@ public class SubjectAndGroupIntegrationTest : IClassFixture<AccessControlWebAppl
         var getSubjectResult = (await client.GetFromJsonAsync<JsonNode>("/Subject/1"))!;
         getSubjectResult["firstName"]!.GetValue<string>().Should().Be("Dave");
         ((JsonArray)getSubjectResult["groups"]!).Should().HaveCount(2);
-        getSubjectResult["groups"]![0]!["id"]!.GetValue<int>().Should().Be(1);
+        getSubjectResult["groups"]![0]!["id"]!.GetValue<int>().Should().Be(group1Id);
         getSubjectResult["groups"]![0]!["name"]!.GetValue<string>().Should().Be("group 1");
-        getSubjectResult["groups"]![1]!["id"]!.GetValue<int>().Should().Be(2);
+        getSubjectResult["groups"]![1]!["id"]!.GetValue<int>().Should().Be(group2Id);
         getSubjectResult["groups"]![1]!["name"]!.GetValue<string>().Should().Be("group 2");
     }
 }
