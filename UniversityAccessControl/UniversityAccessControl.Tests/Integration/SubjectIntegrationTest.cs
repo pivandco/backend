@@ -18,8 +18,7 @@ public class SubjectIntegrationTest : IClassFixture<AccessControlWebApplicationF
     public async Task PostSubject()
     {
         // Arrange
-        var client = _factory.CreateClient();
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "TestScheme");
+        var client = _factory.CreateClient().Authorized();
 
         // Act
         var response = await client.PostAsJsonAsync("/Subject", new
