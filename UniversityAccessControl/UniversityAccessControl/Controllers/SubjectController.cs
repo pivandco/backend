@@ -28,7 +28,8 @@ public class SubjectController : ControllerBase
     [Authorize]
     public async Task<ActionResult<SubjectResponse>> GetSubject(int id)
     {
-        var subject = _mapper.Map<SubjectResponse>(await _db.Subjects.FindAsync(id));
+        var subject =
+            _mapper.Map<SubjectResponse>(await _db.Subjects.Include(s => s.Groups).FirstAsync(s => s.Id == id));
 
         return subject == null ? NotFound() : subject;
     }
@@ -37,28 +38,17 @@ public class SubjectController : ControllerBase
     [Authorize]
     public async Task<IActionResult> PutSubject(int id, SubjectPutRequest subjectPutDto)
     {
-        var subject = _mapper.Map<Subject>(subjectPutDto);
-
-        if (id != subject.Id)
+        if (id != subjectPutDto.Id)
         {
             return BadRequest();
         }
 
-        _db.Entry(subject).State = EntityState.Modified;
+        var subject = await _db.Subjects.Include(s => s.Groups).FirstAsync(s => s.Id == id);
 
-        try
-        {
-            await _db.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!SubjectExists(id))
-            {
-                return NotFound();
-            }
+        _mapper.Map(subjectPutDto, subject);
+        subject.Groups = _db.Groups.Where(g => subjectPutDto.GroupIds.Contains(g.Id)).ToList();
 
-            throw;
-        }
+        await _db.SaveChangesAsync();
 
         return NoContent();
     }
@@ -68,6 +58,8 @@ public class SubjectController : ControllerBase
     public async Task<ActionResult<SubjectResponse>> PostSubject(SubjectPostRequest subjectPutDto)
     {
         var subject = _mapper.Map<Subject>(subjectPutDto);
+        var groupIds = subject.Groups.Select(g => g.Id).ToArray();
+        subject.Groups = _db.Groups.Where(g => groupIds.Contains(g.Id)).ToList();
         _db.Subjects.Add(subject);
         await _db.SaveChangesAsync();
 

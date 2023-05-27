@@ -15,28 +15,56 @@ public class SubjectIntegrationTest : IClassFixture<AccessControlWebApplicationF
     }
 
     [Fact]
-    public async Task PostSubject()
+    public async Task PostAndPutSubjectWithGroup()
     {
-        // Arrange
         var client = _factory.CreateClient().Authorized();
 
-        // Act
-        var response = await client.PostAsJsonAsync("/Subject", new
+        var group1PostResponse = await client.PostAsJsonAsync("/Group", new { name = "group 1" });
+        group1PostResponse.EnsureSuccessStatusCode();
+        var group1Id =
+            JsonSerializer.Deserialize<JsonNode>(await group1PostResponse.Content.ReadAsStringAsync())!["id"]!
+                .GetValue<int>();
+
+        var group2PostResponse = await client.PostAsJsonAsync("/Group", new { name = "group 2" });
+        group2PostResponse.EnsureSuccessStatusCode();
+        var group2Id =
+            JsonSerializer.Deserialize<JsonNode>(await group2PostResponse.Content.ReadAsStringAsync())!["id"]!
+                .GetValue<int>();
+
+        var subjectPostResponse = await client.PostAsJsonAsync("/Subject", new
         {
             firstName = "John",
             middleName = "Johny",
             lastName = "Doe",
             dateOfBirth = "2023-12-30",
-            groupIds = Array.Empty<int>()
+            groupIds = new[] { group1Id }
         });
+        subjectPostResponse.EnsureSuccessStatusCode();
+        var postResult = JsonSerializer.Deserialize<JsonNode>(await subjectPostResponse.Content.ReadAsStringAsync())!;
+        postResult["firstName"]!.GetValue<string>().Should().Be("John");
+        postResult["middleName"]!.GetValue<string>().Should().Be("Johny");
+        postResult["lastName"]!.GetValue<string>().Should().Be("Doe");
+        postResult["dateOfBirth"]!.GetValue<string>().Should().Be("2023-12-30");
+        postResult["groups"]![0]!["id"]!.GetValue<int>().Should().Be(1);
+        postResult["groups"]![0]!["name"]!.GetValue<string>().Should().Be("group 1");
 
-        // Assert
-        response.EnsureSuccessStatusCode();
-        var result = JsonSerializer.Deserialize<JsonNode>(await response.Content.ReadAsStringAsync())!;
-        result["firstName"]!.GetValue<string>().Should().Be("John");
-        result["middleName"]!.GetValue<string>().Should().Be("Johny");
-        result["lastName"]!.GetValue<string>().Should().Be("Doe");
-        result["dateOfBirth"]!.GetValue<string>().Should().Be("2023-12-30");
-        ((JsonArray)result["groups"]!).Should().BeEmpty();
+        var subjectPutResponse = await client.PutAsJsonAsync("/Subject/1", new
+        {
+            id = 1,
+            firstName = "Dave",
+            middleName = "Johny",
+            lastName = "Doe",
+            dateOfBirth = "2023-12-30",
+            groupIds = new[] { group1Id, group2Id }
+        });
+        subjectPutResponse.EnsureSuccessStatusCode();
+
+        var getSubjectResult = (await client.GetFromJsonAsync<JsonNode>("/Subject/1"))!;
+        getSubjectResult["firstName"]!.GetValue<string>().Should().Be("Dave");
+        ((JsonArray)getSubjectResult["groups"]!).Should().HaveCount(2);
+        getSubjectResult["groups"]![0]!["id"]!.GetValue<int>().Should().Be(1);
+        getSubjectResult["groups"]![0]!["name"]!.GetValue<string>().Should().Be("group 1");
+        getSubjectResult["groups"]![1]!["id"]!.GetValue<int>().Should().Be(2);
+        getSubjectResult["groups"]![1]!["name"]!.GetValue<string>().Should().Be("group 2");
     }
 }
