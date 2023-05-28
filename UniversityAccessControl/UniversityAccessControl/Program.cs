@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using UniversityAccessControl;
 using UniversityAccessControl.Auth;
+using UniversityAccessControl.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +61,9 @@ builder.Services
     .AddIdentityCore<IdentityUser>(options => { options.SignIn.RequireConfirmedAccount = false; })
     .AddEntityFrameworkStores<AccessControlDbContext>();
 builder.Services.AddScoped<UserInitializer>();
+
+builder.Services.AddTransient<IRuleRepository, RuleRepository>();
+builder.Services.AddTransient<AccessCheckService>();
 
 builder.Services.AddOptions<JwtOptions>()
     .BindConfiguration("Jwt")
