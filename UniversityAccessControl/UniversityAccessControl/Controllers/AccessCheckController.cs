@@ -22,18 +22,17 @@ public class AccessCheckController : ControllerBase
     [Authorize]
     public async Task<ActionResult<bool>> CanSubjectAccessPassage([Required] int subjectId, [Required] int passageId)
     {
-        var subject = await _db.Subjects.FindAsync(subjectId);
-        if (subject == null)
-        {
-            return new NotFoundObjectResult("Subject not found");
-        }
-        
-        var passage = await _db.Passages.FindAsync(passageId);
-        if (passage == null)
-        {
-            return new NotFoundObjectResult("Passage not found");
-        }
+        var errors = new List<string>();
 
-        return await _accessCheckService.CanPassAsync(subject, passage);
+        var subject = await _db.Subjects.FindAsync(subjectId);
+        if (subject == null) errors.Add("Subject not found");
+
+        var passage = await _db.Passages.FindAsync(passageId);
+        if (passage == null) errors.Add("Passage not found");
+
+        if (errors.Any())
+            return new NotFoundObjectResult(new { errors });
+
+        return await _accessCheckService.CanPassAsync(subject!, passage!);
     }
 }
