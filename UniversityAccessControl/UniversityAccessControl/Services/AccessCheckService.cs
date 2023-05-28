@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using UniversityAccessControl.Models;
 
 namespace UniversityAccessControl.Services;
@@ -15,9 +16,9 @@ public sealed class AccessCheckService
     /// Returns <c>true</c> or <c>false</c> depending on whether a given subject is allowed to pass through a given
     /// passage, decided by the existing rules.
     /// </summary>
-    public bool CanPass(Subject subject, Passage passage)
+    public async Task<bool> CanPassAsync(Subject subject, Passage passage)
     {
-        var rules = _ruleRepository.FindRulesRelatedToSubjectAndPassage(subject, passage).ToArray();
+        var rules = await _ruleRepository.FindRulesRelatedToSubjectAndPassage(subject, passage).ToArrayAsync();
 
         var attemptResults = new[]
         {

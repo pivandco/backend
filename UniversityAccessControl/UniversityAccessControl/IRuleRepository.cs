@@ -4,5 +4,5 @@ namespace UniversityAccessControl;
 
 public interface IRuleRepository
 {
-    IEnumerable<Rule> FindRulesRelatedToSubjectAndPassage(Subject subject, Passage passage);
+    IQueryable<Rule> FindRulesRelatedToSubjectAndPassage(Subject subject, Passage passage);
 }

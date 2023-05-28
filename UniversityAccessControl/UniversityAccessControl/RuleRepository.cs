@@ -11,7 +11,7 @@ public sealed class RuleRepository : IRuleRepository
         _dbContext = dbContext;
     }
 
-    public IEnumerable<Rule> FindRulesRelatedToSubjectAndPassage(Subject subject, Passage passage)
+    public IQueryable<Rule> FindRulesRelatedToSubjectAndPassage(Subject subject, Passage passage)
     {
         var area = passage.Area;
         var groups = subject.Groups;

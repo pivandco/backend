@@ -32,6 +32,6 @@ public class AccessCheckController : ControllerBase
             return new NotFoundObjectResult("Passage not found");
         }
 
-        return _accessCheckService.CanPass(subject, passage);
+        return await _accessCheckService.CanPassAsync(subject, passage);
     }
 }
