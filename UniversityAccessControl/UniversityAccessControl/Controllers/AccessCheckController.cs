@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UniversityAccessControl.Services;
 
@@ -18,6 +19,7 @@ public class AccessCheckController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<bool>> CanSubjectAccessPassage([Required] int subjectId, [Required] int passageId)
     {
         var subject = await _db.Subjects.FindAsync(subjectId);
