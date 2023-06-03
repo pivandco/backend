@@ -13,21 +13,21 @@ public sealed class AccessCheckServiceTest
     private static readonly Passage Passage = new() { Name = "Passage", Area = Area };
 
     [Fact]
-    public void CanPass_NoMatchingRules_Denies()
+    public async void CanPass_NoMatchingRules_Denies()
     {
         // Arrange
         var ruleRepository = Mock.Of<IRuleRepository>(r =>
-            r.FindRulesRelatedToSubjectAndPassage(Subject, Passage) == Array.Empty<Rule>());
+            r.FindRulesRelatedToSubjectAndPassage(Subject, Passage) == Array.Empty<Rule>().AsQueryable());
         var service = new AccessCheckService(ruleRepository);
 
         // Act & Assert
-        service.CanPass(Subject, Passage).Should().BeFalse();
+        (await service.CanPassAsync(Subject, Passage)).Should().BeFalse();
     }
 
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void CanPass_RuleForSubjectAndPassage_ReturnsRulesValue(bool allow)
+    public async void CanPass_RuleForSubjectAndPassage_ReturnsRulesValue(bool allow)
     {
         // Arrange
         var rule = new Rule { Subject = Subject, Passage = Passage, Allow = allow };
@@ -35,11 +35,11 @@ public sealed class AccessCheckServiceTest
         var service = new AccessCheckService(ruleRepository);
 
         // Act & Assert
-        service.CanPass(Subject, Passage).Should().Be(allow);
+        (await service.CanPassAsync(Subject, Passage)).Should().Be(allow);
     }
 
     [Fact]
-    public void CanPass_TwoRulesForSameSubjectAndPassageButDifferentAllowValues_PrioritizesDenyRules()
+    public async void CanPass_TwoRulesForSameSubjectAndPassageButDifferentAllowValues_PrioritizesDenyRules()
     {
         // Arrange
         var denyRule = new Rule { Subject = Subject, Passage = Passage, Allow = false };
@@ -48,13 +48,13 @@ public sealed class AccessCheckServiceTest
         var service = new AccessCheckService(ruleRepository);
 
         // Act & Assert
-        service.CanPass(Subject, Passage).Should().BeFalse();
+        (await service.CanPassAsync(Subject, Passage)).Should().BeFalse();
     }
 
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void CanPass_RuleForSubjectAndArea_ReturnsRulesValue(bool allow)
+    public async void CanPass_RuleForSubjectAndArea_ReturnsRulesValue(bool allow)
     {
         // Arrange
         var rule = new Rule { Subject = Subject, Area = Area, Allow = allow };
@@ -62,13 +62,13 @@ public sealed class AccessCheckServiceTest
         var service = new AccessCheckService(ruleRepository);
 
         // Act & Assert
-        service.CanPass(Subject, Passage).Should().Be(allow);
+        (await service.CanPassAsync(Subject, Passage)).Should().Be(allow);
     }
     
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void CanPass_RuleForGroupAndPassage_ReturnsRulesValue(bool allow)
+    public async void CanPass_RuleForGroupAndPassage_ReturnsRulesValue(bool allow)
     {
         // Arrange
         var rule = new Rule { Group = Group, Passage = Passage, Allow = allow };
@@ -76,13 +76,13 @@ public sealed class AccessCheckServiceTest
         var service = new AccessCheckService(ruleRepository);
 
         // Act & Assert
-        service.CanPass(Subject, Passage).Should().Be(allow);
+        (await service.CanPassAsync(Subject, Passage)).Should().Be(allow);
     }
     
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
-    public void CanPass_RuleForGroupAndArea_ReturnsRulesValue(bool allow)
+    public async void CanPass_RuleForGroupAndArea_ReturnsRulesValue(bool allow)
     {
         // Arrange
         var rule = new Rule { Group = Group, Area = Area, Allow = allow };
@@ -90,11 +90,11 @@ public sealed class AccessCheckServiceTest
         var service = new AccessCheckService(ruleRepository);
 
         // Act & Assert
-        service.CanPass(Subject, Passage).Should().Be(allow);
+        (await service.CanPassAsync(Subject, Passage)).Should().Be(allow);
     }
     
     [Fact]
-    public void CanPass_CascadingRules_FavorsConcreteRules()
+    public async void CanPass_CascadingRules_FavorsConcreteRules()
     {
         // Arrange
         var broadRule = new Rule { Group = Group, Area = Area, Allow = true };
@@ -103,10 +103,10 @@ public sealed class AccessCheckServiceTest
         var service = new AccessCheckService(ruleRepository);
 
         // Act & Assert
-        service.CanPass(Subject, Passage).Should().BeFalse();
+        (await service.CanPassAsync(Subject, Passage)).Should().BeFalse();
     }
     
     private static IRuleRepository GetRuleRepositoryWithRules(params Rule[] rules) =>
         Mock.Of<IRuleRepository>(r =>
-            r.FindRulesRelatedToSubjectAndPassage(Subject, Passage) == rules);
+            r.FindRulesRelatedToSubjectAndPassage(Subject, Passage) == rules.AsQueryable());
 }
